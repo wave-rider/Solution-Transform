@@ -1,7 +1,7 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionTransform", "SolutionTransform\SolutionTransform.csproj", "{F37F9843-2A33-48A4-8D90-81277E0FBAC8}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{741DBCAE-1311-46A5-ADE7-803479AC0308}"
 	ProjectSection(SolutionItems) = preProject
 		Lib\Boo.Lang.CodeDom.dll = Lib\Boo.Lang.CodeDom.dll
@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{644C
 		Scripts\Retarget.boo = Scripts\Retarget.boo
 		Scripts\Sync.boo = Scripts\Sync.boo
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionTransform", "SolutionTransform\SolutionTransform.csproj", "{F37F9843-2A33-48A4-8D90-81277E0FBAC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionTransform.Tests", "SolutionTransform.Tests\SolutionTransform.Tests.csproj", "{0095CABE-FD77-485A-8FF1-DF6B0E7C5823}"
 EndProject
