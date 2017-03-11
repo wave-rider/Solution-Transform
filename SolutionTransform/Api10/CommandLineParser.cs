@@ -119,7 +119,6 @@ namespace SolutionTransform.Api10
 
         public IDictionary<IOption, List<string>> Parameters(IEnumerable<IOption> options)
         {
-            bool showHelp = false;
             var help = new Option("help", false, OptionType.NoValues, "Shows argument help");
             var extendedOptions = options.Union(new [] { help });
             var result = ParseParameters(extendedOptions);

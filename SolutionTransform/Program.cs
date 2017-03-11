@@ -19,15 +19,15 @@ using System.Text.RegularExpressions;
 using SolutionTransform.Files;
 using SolutionTransform.Scripts;
 
-[assembly:InternalsVisibleTo("SolutionTransform.Tests")]
+[assembly: InternalsVisibleTo("SolutionTransform.Tests")]
 
-namespace SolutionTransform {
-    using Api10;
+namespace SolutionTransform
+{
     using Api17;
-    using Solutions;
     using System;
 
     public class Program {
+
 		internal static int Main(IFileSystem fileSystem, string[] args)
 		{
 			return Main(fileSystem, ScriptProvider(fileSystem), args);

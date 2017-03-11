@@ -23,10 +23,6 @@ namespace SolutionTransform
             this.path = Normalize(path);
             this.isDirectory = isDirectory;
             this.isAbsolute = isAbsolute;
-            if (path.EndsWith(".sln") && isDirectory)
-            {
-                int x = 0;
-            }
         }
 
 
