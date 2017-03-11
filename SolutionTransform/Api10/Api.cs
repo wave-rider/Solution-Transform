@@ -86,14 +86,14 @@ namespace SolutionTransform.Api10
         }
 
         public IOption Solution(string name, string description) {
-            return new ApiOption<SolutionTransformer>(name, true, description, OptionType.OneValue, GetSolutionFile);
+            return new ApiOption<SolutionTransformer>(name, true, description, OptionType.OneValue, GetSolutionFileTransformer);
         }
 
         public IOption SolutionList(string name, string description) {
-            return new ApiOption<SolutionTransformer>(name, true, description, OptionType.MultipleValues, GetSolutionFile);
+            return new ApiOption<SolutionTransformer>(name, true, description, OptionType.MultipleValues, GetSolutionFileTransformer);
         }
 
-        private SolutionTransformer GetSolutionFile(string path) {
+        public SolutionTransformer GetSolutionFileTransformer(string path) {
             var parser = new SolutionFileParser(fileSystem);
             var filePath = new FilePath(path, false);
             return new SolutionTransformer(parser.Parse(filePath, fileSystem.LoadAsLines(filePath)));

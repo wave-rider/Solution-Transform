@@ -22,9 +22,12 @@ using SolutionTransform.Scripts;
 [assembly:InternalsVisibleTo("SolutionTransform.Tests")]
 
 namespace SolutionTransform {
-	using System;
+    using Api10;
+    using Api17;
+    using Solutions;
+    using System;
 
-	public class Program {
+    public class Program {
 		internal static int Main(IFileSystem fileSystem, string[] args)
 		{
 			return Main(fileSystem, ScriptProvider(fileSystem), args);
@@ -66,14 +69,23 @@ namespace SolutionTransform {
 				ReportScripts(provider);
                 return 0;
             }
-			var file = provider.AllScripts.FirstOrDefault(s => s.Name.Equals(args[0], StringComparison.InvariantCultureIgnoreCase));
+
+            var api17 = args[0] == "-api17";
+            if (api17)
+            {
+                new RemoveProjectFromSolution(fileSystem, args[1]).Execute();
+                return 0;
+            }
+            var file = provider.AllScripts.FirstOrDefault(s => s.Name.Equals(args[0], StringComparison.InvariantCultureIgnoreCase));
 			if (file == null)
 			{
 				Console.WriteLine("Could not find script named '{0}'.", args[0]);
 				ReportScripts(provider);
 				return 1;
 			}
-        	return file.Execute(args, fileSystem);
+
+            
+            return file.Execute(args, fileSystem);
         }
 
 		private static void ReportScripts(IScriptProvider provider)
