@@ -54,6 +54,10 @@ namespace SolutionTransform.Solutions {
             {
                 return new ProjectConfigurationPlatforms((GlobalChapter)solutionChapter);
             }
+            if (sectionType == "NestedProjects")
+            {
+                return new NestedProjects((GlobalChapter)solutionChapter);
+            }
             return new SolutionSection();
         }
 
@@ -109,6 +113,14 @@ namespace SolutionTransform.Solutions {
                 return Sections.OfType<ProjectConfigurationPlatforms>().Single();
             }
         }
+
+        public NestedProjects NestedProjects
+        {
+            get
+            {
+                return Sections.OfType<NestedProjects>().Single();
+            }
+        }
     }
 
     class ProjectConfigurationPlatforms : SolutionSection {
@@ -136,6 +148,25 @@ namespace SolutionTransform.Solutions {
 
         void AddValue(SolutionProject project, string platform, string build) {
             Values.Add(new KeyValuePair<string, string>(string.Format("{0}.{1}.{2}", project, platform, build), platform));
+        }
+    }
+
+    class NestedProjects : SolutionSection
+    {
+        private readonly GlobalChapter globalChapter;
+
+        public NestedProjects(GlobalChapter globalChapter)
+        {
+            this.globalChapter = globalChapter;
+        }
+
+        public void Remove(SolutionProject project)
+        {
+            var regex = new Regex(Regex.Escape(project.Id.ToString()), RegexOptions.IgnoreCase);
+            foreach (var value in Values.ToList().Where(v => regex.IsMatch(v.Key)))
+            {
+                Values.Remove(value);
+            }
         }
     }
 }

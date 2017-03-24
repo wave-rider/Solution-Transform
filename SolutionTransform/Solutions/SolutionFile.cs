@@ -61,6 +61,7 @@ namespace SolutionTransform.Solutions {
         public void Remove(SolutionProject project) {
             chapters.Remove(project);
             Globals.ProjectConfigurationPlatforms.Remove(project);
+            Globals.NestedProjects.Remove(project);
         }
 
         public void Add(SolutionProject project) {
