@@ -23,7 +23,6 @@ using SolutionTransform.Scripts;
 
 namespace SolutionTransform
 {
-    using Api17;
     using System;
 
     public class Program {
@@ -70,12 +69,6 @@ namespace SolutionTransform
                 return 0;
             }
 
-            var api17 = args[0] == "-api17";
-            if (api17)
-            {
-                new RemoveProjectFromSolution(fileSystem, args[1]).Execute();
-                return 0;
-            }
             var file = provider.AllScripts.FirstOrDefault(s => s.Name.Equals(args[0], StringComparison.InvariantCultureIgnoreCase));
 			if (file == null)
 			{

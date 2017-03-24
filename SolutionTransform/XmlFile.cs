@@ -21,7 +21,7 @@ namespace SolutionTransform
             this.document = document;
         }
 
-        internal XmlDocument Document {
+        public XmlDocument Document {
             get {
                 if (document == null) {
                     document = fileSystem.LoadAsDocument(filePath);

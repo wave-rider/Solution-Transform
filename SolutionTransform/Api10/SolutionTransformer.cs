@@ -5,93 +5,63 @@ using SolutionTransform.Model;
 using SolutionTransform.ProjectFile;
 using SolutionTransform.Solutions;
 using SolutionTransform.Solutions.Commands;
+using SolutionTransform.Common;
 
 namespace SolutionTransform.Api10
 {
     public class SolutionTransformer
     {
-        private readonly SolutionFile solutionFile;
+        private readonly SolutionFile _solutionFile;
 
         public SolutionTransformer(SolutionFile solutionFile)
         {
-            this.solutionFile = solutionFile;
+            this._solutionFile = solutionFile;
         }
 
         public void Transform(IRename rename, params ISolutionCommand[] solutionCommands) {
-            var originalProjects = solutionFile.Projects.ToList();
+            var originalProjects = _solutionFile.Projects.ToList();
             var solutionCommand = solutionCommands.Length == 1
                 ? solutionCommands[0]
                 : new CompositeCommand(solutionCommands);
-            solutionCommand.Process(solutionFile);
+            solutionCommand.Process(_solutionFile);
+            SynchronizeProjectReferences(originalProjects);
 
-            SynchronizeProjectReferences(solutionFile.Projects, originalProjects);
-
-            ApplyTransform(new NameTransform(rename));  // Rename the projects and solution
-
-            SaveProjectsAndSolution(rename);
+            new TransformFinalizer(this._solutionFile).FinalizeTransform(rename);           
         }
 
-        private void SynchronizeProjectReferences(IEnumerable<SolutionProject> currentProjects, IEnumerable<SolutionProject> originalProjects)
+        private void SynchronizeProjectReferences(IEnumerable<SolutionProject> originalProjects)
         {
+            var currentProjects = _solutionFile.Projects.ToList();
             var addedProjects = currentProjects.Except(originalProjects);
             var removedProjects = originalProjects.Except(currentProjects);
-            foreach (var project in addedProjects) {
+            foreach (var project in addedProjects)
+            {
                 ApplyTransform(new ConvertAssemblyToProject(project));
             }
-            foreach (var project in removedProjects) {
+            foreach (var project in removedProjects)
+            {
                 ApplyTransform(new ConvertProjectToAssembly(project));
             }
         }
 
+        // Extract it into the class
         void ApplyTransform(ITransform transform)
         {
             var command = Api.TransformCommand(transform);
-            command.Process(solutionFile);
-        }
-
-        private void SaveProjectsAndSolution(IRename rename)
-        {
-            foreach (var project in solutionFile.Projects.Where(p => !p.IsFolder)) {
-                project.Name = rename.RenameSolutionProjectName(project.Name);
-                project.Path = new FilePath (rename.RenameCsproj(project.Path.Path), false);
-                // Note that project.Path and project.XmlFile.Path have different values....
-                var from = project.XmlFile.Path.Path;
-                var to = rename.RenameCsproj(from);
-                project.XmlFile.Save(to);
-                Duplicate(from, to, ".cspscc");
-                Duplicate(from, to, ".user");
-                
-            }
-            var destination = rename.RenameSln(solutionFile.FullPath.Path);
-            var filePath = new FilePath(destination, false, true);
-            solutionFile.Save(filePath);
-        }
-
-        private void Duplicate(string from, string to, string extension)
-        {
-
-            string fromWithExtension = from + extension;
-            var toWithExtension = to + extension;
-            if (StringComparer.InvariantCultureIgnoreCase.Equals(fromWithExtension, toWithExtension))
-            {
-                return;
-            }
-            if (System.IO.File.Exists(fromWithExtension)) {
-                System.IO.File.Copy(fromWithExtension, toWithExtension, true);
-            }
+            command.Process(_solutionFile);
         }
 
         internal FilePath BasePath
         {
             get
             {
-                return solutionFile.FullPath.Parent;
+                return _solutionFile.FullPath.Parent;
             }
         }
 
         internal SolutionFile Solution
         {
-            get { return solutionFile; }
+            get { return _solutionFile; }
         }
     }
 }
